@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rancharia • Almoço do Dia</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Raleway:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --terra: #8B4513;
+    --terra-escuro: #5C2E0A;
+    --dourado: #C8922A;
+    --dourado-claro: #E8B84B;
+    --creme: #FDF5E6;
+    --creme-escuro: #F0E0C0;
+    --verde: #4A7C59;
+    --wpp: #25D366;
+    --branco: #FFFEF9;
+    --texto: #2C1A0A;
+    --sombra: rgba(92,46,10,0.18);
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body {
+    font-family:'Raleway',sans-serif;
+    background:var(--creme); color:var(--texto); min-height:100vh;
+    background-image:
+      radial-gradient(ellipse at 10% 0%,rgba(200,146,42,0.12) 0%,transparent 55%),
+      radial-gradient(ellipse at 90% 100%,rgba(139,69,19,0.10) 0%,transparent 55%);
+  }
+
+  /* HEADER */
+  header {
+    background:var(--terra-escuro); padding:28px 24px 20px;
+    text-align:center; position:relative; overflow:hidden;
+  }
+  header::before {
+    content:''; position:absolute; inset:0;
+    background:repeating-linear-gradient(-45deg,transparent,transparent 12px,rgba(255,255,255,0.03) 12px,rgba(255,255,255,0.03) 13px);
+  }
+  .header-ornament { display:flex; align-items:center; justify-content:center; gap:12px; margin-bottom:6px; }
+  .ornament-line { flex:1; max-width:60px; height:1px; background:linear-gradient(to right,transparent,var(--dourado-claro)); }
+  .ornament-line.right { background:linear-gradient(to left,transparent,var(--dourado-claro)); }
+  .ornament-icon { color:var(--dourado-claro); font-size:18px; }
+  header h1 {
+    font-family:'Playfair Display',serif;
+    font-size:clamp(2rem,8vw,3.4rem); font-weight:900; color:var(--creme);
+    letter-spacing:3px; text-transform:uppercase; line-height:1; position:relative;
+  }
+  header .subtitulo {
+    font-size:0.75rem; font-weight:300; color:var(--dourado-claro);
+    letter-spacing:5px; text-transform:uppercase; margin-top:6px; position:relative;
+  }
+
+  .container { max-width:680px; margin:0 auto; padding:24px 16px 120px; }
+
+  .secao {
+    background:var(--branco); border-radius:16px; margin-bottom:16px;
+    overflow:hidden; box-shadow:0 2px 16px var(--sombra); animation:fadeUp 0.4s ease both;
+  }
+  .secao:nth-child(2){animation-delay:.07s}
+  .secao:nth-child(3){animation-delay:.12s}
+  .secao:nth-child(4){animation-delay:.17s}
+  .secao:nth-child(5){animation-delay:.22s}
+  @keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+
+  .secao-header {
+    background:var(--terra); padding:14px 20px;
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .secao-header h2 {
+    font-family:'Playfair Display',serif; font-size:1.05rem; font-weight:700;
+    color:var(--creme); letter-spacing:0.5px; display:flex; align-items:center; gap:8px;
+  }
+  .badge {
+    background:rgba(255,255,255,0.2); color:var(--creme-escuro);
+    font-size:0.65rem; font-weight:600; letter-spacing:1px; text-transform:uppercase;
+    padding:3px 8px; border-radius:20px; font-family:'Raleway',sans-serif; white-space:nowrap;
+  }
+  .badge.obrigatorio { background:var(--dourado); color:var(--terra-escuro); }
+  .badge.completo { background:#4A7C59; color:white; }
+
+  .opcoes-lista { padding:8px 0; }
+
+  .opcao-item {
+    display:flex; align-items:center; padding:12px 20px; cursor:pointer;
+    transition:background 0.15s; border-bottom:1px solid rgba(200,146,42,0.08);
+  }
+  .opcao-item:last-child { border-bottom:none; }
+  .opcao-item:hover { background:rgba(200,146,42,0.06); }
+  .opcao-item.selecionado { background:rgba(74,124,89,0.08); }
+  .opcao-item.desabilitado { opacity:0.4; cursor:not-allowed; pointer-events:none; }
+
+  .opcao-check {
+    width:22px; height:22px; border-radius:6px; border:2px solid var(--creme-escuro);
+    margin-right:14px; flex-shrink:0; display:flex; align-items:center; justify-content:center;
+    transition:all 0.2s; background:white;
+  }
+  .opcao-item.radio .opcao-check { border-radius:50%; }
+  .opcao-item.selecionado .opcao-check { background:var(--verde); border-color:var(--verde); }
+  .opcao-check::after {
+    content:''; width:10px; height:10px; border-radius:3px; background:white;
+    opacity:0; transform:scale(0.5); transition:all 0.2s;
+  }
+  .opcao-item.radio .opcao-check::after { border-radius:50%; }
+  .opcao-item.selecionado .opcao-check::after { opacity:1; transform:scale(1); }
+
+  .opcao-nome { font-size:0.92rem; font-weight:500; color:var(--texto); flex:1; }
+  .opcao-item.selecionado .opcao-nome { color:var(--verde); font-weight:600; }
+
+  /* RODAPÉ */
+  .rodape-fixo {
+    position:fixed; bottom:0; left:0; right:0;
+    background:var(--terra-escuro); padding:14px 20px 20px;
+    z-index:100; box-shadow:0 -4px 24px rgba(0,0,0,0.25);
+  }
+  .rodape-resumo {
+    display:flex; align-items:center; justify-content:space-between;
+    max-width:680px; margin:0 auto; gap:12px;
+  }
+  .rodape-info { flex:1; min-width:0; }
+  .rodape-prato { font-size:0.75rem; color:var(--dourado-claro); letter-spacing:0.5px; margin-bottom:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .rodape-total { font-family:'Playfair Display',serif; font-size:1.6rem; font-weight:700; color:var(--creme); line-height:1; }
+  .status-lista { display:flex; flex-wrap:wrap; gap:4px 12px; margin-top:4px; }
+  .status-item { font-size:0.7rem; color:rgba(255,255,255,0.45); }
+  .status-item.ok { color:var(--dourado-claro); }
+
+  .btn-pedir {
+    background:var(--dourado); color:var(--terra-escuro); border:none; border-radius:12px;
+    padding:14px 24px; font-family:'Raleway',sans-serif; font-size:0.9rem; font-weight:700;
+    letter-spacing:1px; text-transform:uppercase; cursor:pointer; transition:all 0.2s;
+    white-space:nowrap; flex-shrink:0;
+  }
+  .btn-pedir:hover { background:var(--dourado-claro); transform:translateY(-1px); }
+  .btn-pedir.inativo { background:rgba(255,255,255,0.15); color:rgba(255,255,255,0.35); cursor:not-allowed; transform:none; }
+
+  /* =====================
+     OVERLAY / DRAWER
+  ===================== */
+  .drawer-overlay {
+    position:fixed; inset:0; background:rgba(0,0,0,0); z-index:200;
+    pointer-events:none; transition:background 0.35s ease;
+  }
+  .drawer-overlay.ativo { background:rgba(0,0,0,0.55); pointer-events:all; }
+
+  /* drawer desliza de baixo */
+  .drawer {
+    position:absolute; bottom:0; left:0; right:0;
+    background:var(--branco); border-radius:22px 22px 0 0;
+    padding:0 0 32px;
+    transform:translateY(100%);
+    transition:transform 0.38s cubic-bezier(0.32,0.72,0,1);
+    max-height:92vh; overflow-y:auto;
+  }
+  .drawer-overlay.ativo .drawer { transform:translateY(0); }
+
+  .drawer-handle {
+    width:40px; height:4px; background:var(--creme-escuro);
+    border-radius:2px; margin:14px auto 0;
+  }
+  .drawer-header {
+    padding:18px 22px 14px;
+    border-bottom:1px solid rgba(200,146,42,0.1);
+    text-align:center;
+  }
+  .drawer-header h3 {
+    font-family:'Playfair Display',serif; font-size:1.35rem;
+    color:var(--terra-escuro); font-weight:700;
+  }
+  .drawer-body { padding:16px 20px 0; }
+
+  /* Modal pequeno (sem salada) ainda usa modal clássico */
+  .modal-overlay {
+    display:none; position:fixed; inset:0;
+    background:rgba(0,0,0,0.6); z-index:300;
+    align-items:center; justify-content:center; padding:16px;
+  }
+  .modal-overlay.ativo { display:flex; }
+  .modal {
+    background:var(--branco); border-radius:20px; padding:24px 20px;
+    max-width:360px; width:100%; text-align:center;
+    animation:popIn 0.25s ease;
+  }
+  @keyframes popIn { from{opacity:0;transform:scale(0.9)} to{opacity:1;transform:scale(1)} }
+  .modal h3 { font-family:'Playfair Display',serif; font-size:1.35rem; color:var(--terra-escuro); margin-bottom:6px; }
+  .modal > p { font-size:0.87rem; color:#666; line-height:1.6; margin-bottom:16px; }
+
+  .modal-btns { display:flex; gap:10px; margin-top:14px; }
+  .btn-sec {
+    flex:1; background:var(--creme-escuro); color:var(--terra); border:none;
+    border-radius:10px; padding:13px; font-family:'Raleway',sans-serif;
+    font-size:0.85rem; font-weight:600; cursor:pointer;
+  }
+  .btn-prim {
+    flex:2; background:var(--verde); color:white; border:none; border-radius:10px;
+    padding:13px; font-family:'Raleway',sans-serif; font-size:0.85rem;
+    font-weight:700; cursor:pointer; letter-spacing:0.5px;
+    display:flex; align-items:center; justify-content:center; gap:8px;
+    transition:background 0.2s, opacity 0.2s;
+  }
+  .btn-prim.terra { background:var(--terra); }
+  .btn-prim.wpp { background:var(--wpp); }
+  .btn-prim.cinza { background:#bbb; cursor:not-allowed; opacity:0.7; }
+
+  /* RESUMO */
+  .resumo-pedido {
+    background:var(--creme); border-radius:12px; padding:14px;
+    font-size:0.84rem; line-height:2;
+  }
+  .resumo-pedido strong { color:var(--terra); font-weight:700; }
+
+  /* BLOCO DE PREÇO DETALHADO */
+  .preco-detalhe {
+    background:var(--branco); border:1.5px solid var(--creme-escuro);
+    border-radius:12px; padding:12px 16px; margin:12px 0;
+  }
+  .preco-linha {
+    display:flex; justify-content:space-between; align-items:center;
+    font-size:0.85rem; color:#666; padding:3px 0;
+  }
+  .preco-linha.frete { color:var(--terra); font-weight:600; }
+  .preco-linha.total {
+    border-top:1.5px dashed var(--creme-escuro); margin-top:6px; padding-top:8px;
+    font-weight:700; font-size:1rem; color:var(--texto);
+  }
+  .preco-linha.total .valor-total {
+    font-family:'Playfair Display',serif; font-size:1.5rem; color:var(--verde); font-weight:700;
+  }
+
+  /* ENTREGA TABS */
+  .entrega-titulo { font-size:0.72rem; font-weight:700; color:#999; letter-spacing:1px; text-transform:uppercase; margin:16px 0 8px; }
+  .entrega-opcoes { display:flex; gap:10px; }
+  .entrega-btn {
+    flex:1; padding:14px 8px; border-radius:14px; border:2px solid var(--creme-escuro);
+    background:white; cursor:pointer; font-family:'Raleway',sans-serif;
+    font-size:0.83rem; font-weight:600; color:var(--texto); text-align:center;
+    transition:border-color 0.25s, background 0.25s, color 0.25s;
+  }
+  .entrega-btn .ent-icon { font-size:1.6rem; display:block; margin-bottom:4px; }
+  .entrega-btn:hover { border-color:var(--terra); }
+  .entrega-btn.ativo { border-color:var(--terra); background:rgba(139,69,19,0.06); color:var(--terra); }
+
+  /* FORM ANIMADO */
+  .form-bloco {
+    overflow:hidden; max-height:0;
+    transition:max-height 0.4s cubic-bezier(0.4,0,0.2,1), opacity 0.3s ease;
+    opacity:0;
+  }
+  .form-bloco.visivel { max-height:500px; opacity:1; }
+  .form-inner { padding-top:12px; }
+
+  .campo-grupo { margin-bottom:8px; }
+  .campo-grupo input, .campo-grupo textarea {
+    width:100%; padding:11px 14px;
+    border:1.5px solid var(--creme-escuro); border-radius:10px;
+    font-family:'Raleway',sans-serif; font-size:0.88rem; color:var(--texto);
+    background:white; outline:none; transition:border 0.2s; resize:none;
+  }
+  .campo-grupo input:focus, .campo-grupo textarea:focus { border-color:var(--terra); }
+  .campos-row { display:flex; gap:8px; }
+  .campos-row .campo-grupo { flex:1; }
+  .campos-row .campo-grupo.largo { flex:2; }
+
+  .sucesso-icon { font-size:3rem; margin-bottom:10px; }
+
+  /* WPP SVG */
+  .wpp-svg { width:20px; height:20px; flex-shrink:0; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-ornament">
+    <div class="ornament-line"></div>
+    <span class="ornament-icon">🍽</span>
+    <div class="ornament-line right"></div>
+  </div>
+  <h1>Rancharia</h1>
+  <p class="subtitulo">Almoço do Dia</p>
+</header>
+
+<div class="container">
+
+  <div class="secao">
+    <div class="secao-header">
+      <h2>🥩 Escolha sua Carne</h2>
+      <span class="badge obrigatorio" id="badge-carne">Escolha até 2</span>
+    </div>
+    <div class="opcoes-lista" id="lista-carnes"></div>
+  </div>
+
+  <div class="secao">
+    <div class="secao-header">
+      <h2>🍚 Acompanhamentos</h2>
+      <span class="badge completo" id="badge-acomp">✔ Ambos</span>
+    </div>
+    <div class="opcoes-lista" id="lista-acomp"></div>
+  </div>
+
+  <div class="secao">
+    <div class="secao-header">
+      <h2>🫘 Feijão</h2>
+      <span class="badge obrigatorio" id="badge-feijao">Escolha 1</span>
+    </div>
+    <div class="opcoes-lista" id="lista-feijao"></div>
+  </div>
+
+  <div class="secao" id="secao-saladas">
+    <div class="secao-header">
+      <h2>🥗 Saladas</h2>
+      <span class="badge" id="badge-salada">0 de 3</span>
+    </div>
+    <div class="opcoes-lista" id="lista-saladas"></div>
+  </div>
+
+</div>
+
+<!-- RODAPÉ FIXO -->
+<div class="rodape-fixo">
+  <div class="rodape-resumo">
+    <div class="rodape-info">
+      <div class="rodape-prato" id="rodape-texto">Monte seu prato</div>
+      <div class="rodape-total" id="rodape-preco">R$ 0,00</div>
+      <div class="status-lista" id="status-lista"></div>
+    </div>
+    <button class="btn-pedir inativo" id="btn-pedir" onclick="clicarPedir()">Fazer Pedido</button>
+  </div>
+</div>
+
+<!-- ========================
+     DRAWER: CHECKOUT
+========================= -->
+<div class="drawer-overlay" id="drawer-checkout" onclick="fecharDrawerFora(event)">
+  <div class="drawer" id="drawer-inner">
+    <div class="drawer-handle"></div>
+    <div class="drawer-header">
+      <h3>Finalizar Pedido</h3>
+    </div>
+    <div class="drawer-body">
+
+      <div class="resumo-pedido" id="checkout-resumo"></div>
+
+      <!-- PREÇO DETALHADO -->
+      <div class="preco-detalhe" id="preco-detalhe">
+        <div class="preco-linha">
+          <span id="label-prato">Prato</span>
+          <span id="val-prato">R$ 0,00</span>
+        </div>
+        <div class="preco-linha frete" id="linha-frete" style="display:none">
+          <span>🛵 Frete</span>
+          <span>+ R$ 6,00</span>
+        </div>
+        <div class="preco-linha total">
+          <span>Total</span>
+          <span class="valor-total" id="val-total">R$ 0,00</span>
+        </div>
+      </div>
+
+      <div class="entrega-titulo">Como vai consumir?</div>
+      <div class="entrega-opcoes">
+        <div class="entrega-btn" id="btn-mesa" onclick="selecionarEntrega('mesa')">
+          <span class="ent-icon">🍴</span>Comer Aqui
+        </div>
+        <div class="entrega-btn" id="btn-delivery" onclick="selecionarEntrega('delivery')">
+          <span class="ent-icon">🛵</span>Delivery
+        </div>
+      </div>
+
+      <!-- FORM MESA -->
+      <div class="form-bloco" id="form-mesa">
+        <div class="form-inner">
+          <div class="campo-grupo">
+            <input type="text" id="input-mesa" placeholder="N° da mesa ou digite Retirada" oninput="verificarCampos()">
+          </div>
+          <div class="campo-grupo">
+            <textarea id="obs-mesa" rows="2" placeholder="Observação (opcional)" oninput="verificarCampos()"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- FORM DELIVERY -->
+      <div class="form-bloco" id="form-delivery">
+        <div class="form-inner">
+          <div class="campo-grupo">
+            <input type="text" id="input-rua" placeholder="Rua" oninput="verificarCampos()">
+          </div>
+          <div class="campos-row">
+            <div class="campo-grupo">
+              <input type="text" id="input-numero" placeholder="Número" oninput="verificarCampos()">
+            </div>
+            <div class="campo-grupo largo">
+              <input type="text" id="input-bairro" placeholder="Bairro" oninput="verificarCampos()">
+            </div>
+          </div>
+          <div class="campo-grupo">
+            <textarea id="obs-delivery" rows="2" placeholder="Observação (opcional)" oninput="verificarCampos()"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-btns" style="margin-top:16px">
+        <button class="btn-sec" onclick="fecharDrawer()">Voltar</button>
+        <button class="btn-prim wpp cinza" id="btn-confirmar" onclick="confirmarPedido()">
+          <!-- WhatsApp SVG oficial -->
+          <svg class="wpp-svg" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M24 4C12.954 4 4 12.954 4 24c0 3.553.924 6.889 2.544 9.779L4 44l10.521-2.506A19.916 19.916 0 0024 44c11.046 0 20-8.954 20-20S35.046 4 24 4z" fill="white" fill-opacity="0.25"/>
+            <path d="M24 6.5C14.335 6.5 6.5 14.335 6.5 24c0 3.26.877 6.317 2.41 8.944L6.5 41.5l8.803-2.373A17.443 17.443 0 0024 41.5c9.665 0 17.5-7.835 17.5-17.5S33.665 6.5 24 6.5z" fill="white"/>
+            <path d="M32.013 27.898c-.368-.184-2.176-1.073-2.513-1.196-.337-.122-.583-.184-.828.184-.245.368-.952 1.196-1.167 1.44-.214.245-.429.276-.797.092-.368-.184-1.553-.572-2.958-1.826-1.093-.973-1.83-2.174-2.045-2.542-.214-.368-.023-.567.161-.75.165-.165.368-.43.552-.644.184-.214.245-.368.368-.613.122-.245.061-.46-.031-.644-.092-.184-.828-1.996-1.135-2.733-.298-.718-.601-.62-.828-.631l-.706-.012c-.245 0-.644.092-.981.46-.337.368-1.287 1.257-1.287 3.068 0 1.81 1.318 3.559 1.502 3.804.184.245 2.592 3.957 6.282 5.548.878.379 1.563.605 2.097.774.881.28 1.683.24 2.317.145.707-.105 2.176-.889 2.483-1.748.307-.858.307-1.594.214-1.748-.092-.153-.337-.245-.706-.429z" fill="var(--wpp)"/>
+          </svg>
+          Confirmar no WhatsApp
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: SEM SALADA -->
+<div class="modal-overlay" id="modal-sem-salada">
+  <div class="modal">
+    <div style="font-size:2.2rem;margin-bottom:10px">🥗</div>
+    <h3>Sem salada?</h3>
+    <p>Você não selecionou nenhuma salada.<br>Deseja prosseguir assim mesmo?</p>
+    <div class="modal-btns">
+      <button class="btn-sec" onclick="irParaSalada()">Adicionar salada</button>
+      <button class="btn-prim terra" onclick="fecharModal('modal-sem-salada');abrirDrawer()">Prosseguir</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: SUCESSO -->
+<div class="modal-overlay" id="modal-sucesso">
+  <div class="modal">
+    <div class="sucesso-icon">✅</div>
+    <h3>Pedido Enviado!</h3>
+    <p id="sucesso-msg">Redirecionando para o WhatsApp...</p>
+    <div class="modal-btns" style="margin-top:8px">
+      <button class="btn-prim" onclick="novoPedido()">Novo Pedido</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const CARNES  = ['Frango grelhado','Carne assada','Bisteca suína','Costelinha de porco','Linguiça artesanal'];
+const ACOMPS  = ['Arroz branco','Macarrão'];
+const FEIJOES = ['Feijão carioca','Feijão preto'];
+const SALADAS = ['Alface e tomate','Maionese de legumes','Couve refogada','Beterraba','Pepino com vinagrete'];
+
+const PRECO_1 = 15;
+const PRECO_2 = 22;
+const FRETE   = 6;
+const WPP_NUM = '5574988188139';
+
+let estado = { carnes:[], acomps:[0,1], feijao:null, saladas:[] };
+let tipoEntrega = null;
+
+// ========================
+// RENDER
+// ========================
+
+function renderCarnes() {
+  const lista = document.getElementById('lista-carnes');
+  lista.innerHTML = '';
+  CARNES.forEach((nome, i) => {
+    const sel  = estado.carnes.includes(i);
+    const desa = !sel && estado.carnes.length >= 2;
+    const div  = document.createElement('div');
+    div.className = 'opcao-item' + (sel?' selecionado':'') + (desa?' desabilitado':'');
+    div.innerHTML  = `<div class="opcao-check"></div><span class="opcao-nome">${nome}</span>`;
+    if (!desa) div.addEventListener('click', () => {
+      if (sel) estado.carnes = estado.carnes.filter(x=>x!==i);
+      else if (estado.carnes.length < 2) estado.carnes.push(i);
+      renderTudo();
+    });
+    lista.appendChild(div);
+  });
+}
+
+function renderAcomps() {
+  const lista = document.getElementById('lista-acomp');
+  lista.innerHTML = '';
+  ACOMPS.forEach((nome, i) => {
+    const sel = estado.acomps.includes(i);
+    const div = document.createElement('div');
+    div.className = 'opcao-item' + (sel?' selecionado':'');
+    div.innerHTML  = `<div class="opcao-check"></div><span class="opcao-nome">${nome}</span>`;
+    div.addEventListener('click', () => {
+      if (sel) estado.acomps = estado.acomps.filter(x=>x!==i);
+      else estado.acomps.push(i);
+      renderTudo();
+    });
+    lista.appendChild(div);
+  });
+  const n = estado.acomps.length;
+  const b = document.getElementById('badge-acomp');
+  b.textContent = n===2?'✔ Ambos':n===1?'✔ '+ACOMPS[estado.acomps[0]].split(' ')[0]:'Nenhum';
+  b.className   = 'badge'+(n>0?' completo':'');
+}
+
+function renderFeijao() {
+  const lista = document.getElementById('lista-feijao');
+  lista.innerHTML = '';
+  FEIJOES.forEach((nome, i) => {
+    const sel = estado.feijao === i;
+    const div = document.createElement('div');
+    div.className = 'opcao-item radio' + (sel?' selecionado':'');
+    div.innerHTML  = `<div class="opcao-check"></div><span class="opcao-nome">${nome}</span>`;
+    div.addEventListener('click', () => { estado.feijao=i; renderTudo(); });
+    lista.appendChild(div);
+  });
+}
+
+function renderSaladas() {
+  const lista = document.getElementById('lista-saladas');
+  lista.innerHTML = '';
+  SALADAS.forEach((nome, i) => {
+    const sel  = estado.saladas.includes(i);
+    const desa = !sel && estado.saladas.length >= 3;
+    const div  = document.createElement('div');
+    div.className = 'opcao-item' + (sel?' selecionado':'') + (desa?' desabilitado':'');
+    div.innerHTML  = `<div class="opcao-check"></div><span class="opcao-nome">${nome}</span>`;
+    if (!desa) div.addEventListener('click', () => {
+      if (sel) estado.saladas = estado.saladas.filter(x=>x!==i);
+      else if (estado.saladas.length<3) estado.saladas.push(i);
+      renderTudo();
+    });
+    lista.appendChild(div);
+  });
+}
+
+function renderBadges() {
+  const bc = document.getElementById('badge-carne');
+  const nc = estado.carnes.length;
+  if (nc===2) { bc.textContent='✔ 2 carnes — R$ 22'; bc.className='badge completo'; }
+  else if (nc===1) { bc.textContent='✔ '+CARNES[estado.carnes[0]].split(' ')[0]+' — R$ 15'; bc.className='badge completo'; }
+  else { bc.textContent='Escolha até 2'; bc.className='badge obrigatorio'; }
+
+  const bf = document.getElementById('badge-feijao');
+  if (estado.feijao!==null) { bf.textContent='✔ '+FEIJOES[estado.feijao].split(' ')[1]; bf.className='badge completo'; }
+  else { bf.textContent='Escolha 1'; bf.className='badge obrigatorio'; }
+
+  const bs = document.getElementById('badge-salada');
+  const ns = estado.saladas.length;
+  bs.textContent = ns>=3?'✔ 3 de 3':ns+' de 3';
+  bs.className   = 'badge'+(ns>=3?' completo':ns>0?' obrigatorio':'');
+}
+
+function calcPreco() {
+  return estado.carnes.length===2 ? PRECO_2 : estado.carnes.length===1 ? PRECO_1 : 0;
+}
+
+function renderRodape() {
+  const preco = calcPreco();
+  const nc    = estado.carnes.length;
+  document.getElementById('rodape-preco').textContent = preco>0 ? 'R$ '+fmt(preco) : 'R$ 0,00';
+  document.getElementById('rodape-texto').textContent = nc>0
+    ? (nc===1 ? CARNES[estado.carnes[0]] : CARNES[estado.carnes[0]]+' + '+CARNES[estado.carnes[1]].split(' ')[0])
+    : 'Monte seu prato';
+  const sl = document.getElementById('status-lista');
+  sl.innerHTML = [
+    {label:'Carne', ok:nc>0},
+    {label:'Feijão', ok:estado.feijao!==null},
+  ].map(it=>`<span class="status-item${it.ok?' ok':''}">${it.ok?'✔':'○'} ${it.label}</span>`).join('');
+  document.getElementById('btn-pedir').className = 'btn-pedir'+(nc>0?'':' inativo');
+}
+
+function renderTudo() {
+  renderCarnes(); renderAcomps(); renderFeijao(); renderSaladas(); renderBadges(); renderRodape();
+}
+
+function fmt(n) { return n.toFixed(2).replace('.',','); }
+
+// ========================
+// FLUXO
+// ========================
+
+function clicarPedir() {
+  if (estado.carnes.length===0) return;
+  if (estado.saladas.length===0) abrirModal('modal-sem-salada');
+  else abrirDrawer();
+}
+
+function irParaSalada() {
+  fecharModal('modal-sem-salada');
+  setTimeout(() => {
+    document.getElementById('secao-saladas').scrollIntoView({ behavior:'smooth', block:'center' });
+  }, 120);
+}
+
+// ---- DRAWER ----
+
+function abrirDrawer() {
+  tipoEntrega = null;
+
+  // Resumo
+  const nc      = estado.carnes.length;
+  const carneStr= estado.carnes.map(i=>CARNES[i]).join(' + ');
+  const acomp   = estado.acomps.length>0 ? estado.acomps.map(i=>ACOMPS[i]).join(' e ') : 'Nenhum';
+  const salada  = estado.saladas.length>0 ? estado.saladas.map(i=>SALADAS[i]).join(', ') : 'Sem salada';
+  const feijao  = estado.feijao!==null ? FEIJOES[estado.feijao] : 'Sem feijão';
+  document.getElementById('checkout-resumo').innerHTML =
+    `<strong>🥩 Carne:</strong> ${carneStr}<br>
+     <strong>🍚 Acompanhamento:</strong> ${acomp}<br>
+     <strong>🫘 Feijão:</strong> ${feijao}<br>
+     <strong>🥗 Saladas:</strong> ${salada}`;
+
+  // Preço
+  atualizarPrecoDetalhe();
+
+  // Reset formulários
+  ['btn-mesa','btn-delivery'].forEach(id=>document.getElementById(id).classList.remove('ativo'));
+  document.getElementById('form-mesa').classList.remove('visivel');
+  document.getElementById('form-delivery').classList.remove('visivel');
+  ['input-mesa','obs-mesa','input-rua','input-numero','input-bairro','obs-delivery']
+    .forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+  setBtnConfirmar(false);
+
+  document.getElementById('drawer-checkout').classList.add('ativo');
+  document.body.style.overflow = 'hidden';
+}
+
+function fecharDrawer() {
+  document.getElementById('drawer-checkout').classList.remove('ativo');
+  document.body.style.overflow = '';
+}
+
+function fecharDrawerFora(e) {
+  if (e.target === document.getElementById('drawer-checkout')) fecharDrawer();
+}
+
+function atualizarPrecoDetalhe() {
+  const base  = calcPreco();
+  const frete = tipoEntrega==='delivery' ? FRETE : 0;
+  const total = base + frete;
+  const nc    = estado.carnes.length;
+  const label = nc===2 ? `Prato (2 carnes)` : `Prato (1 carne)`;
+
+  document.getElementById('label-prato').textContent = label;
+  document.getElementById('val-prato').textContent   = 'R$ '+fmt(base);
+  document.getElementById('val-total').textContent   = 'R$ '+fmt(total);
+  document.getElementById('linha-frete').style.display = tipoEntrega==='delivery' ? 'flex' : 'none';
+}
+
+function selecionarEntrega(tipo) {
+  // Fechar o outro form primeiro
+  const outro = tipo==='mesa' ? 'form-delivery' : 'form-mesa';
+  const atual = tipo==='mesa' ? 'form-mesa' : 'form-delivery';
+  document.getElementById(outro).classList.remove('visivel');
+  document.getElementById('btn-'+(tipo==='mesa'?'delivery':'mesa')).classList.remove('ativo');
+
+  // Pequeno delay para animação suave
+  setTimeout(() => {
+    tipoEntrega = tipo;
+    document.getElementById('btn-'+tipo).classList.add('ativo');
+    document.getElementById(atual).classList.add('visivel');
+    atualizarPrecoDetalhe();
+    verificarCampos();
+  }, 80);
+}
+
+function verificarCampos() {
+  if (!tipoEntrega) { setBtnConfirmar(false); return; }
+  let ok = false;
+  if (tipoEntrega==='mesa') {
+    ok = document.getElementById('input-mesa').value.trim().length > 0;
+  } else {
+    ok = document.getElementById('input-rua').value.trim().length > 0
+      && document.getElementById('input-numero').value.trim().length > 0
+      && document.getElementById('input-bairro').value.trim().length > 0;
+  }
+  setBtnConfirmar(ok);
+}
+
+function setBtnConfirmar(ativo) {
+  const btn = document.getElementById('btn-confirmar');
+  btn.className = 'btn-prim wpp' + (ativo ? '' : ' cinza');
+}
+
+function confirmarPedido() {
+  if (!tipoEntrega) return;
+
+  const nc       = estado.carnes.length;
+  const carneStr = estado.carnes.map(i=>CARNES[i]).join(' + ');
+  const acomp    = estado.acomps.length>0 ? estado.acomps.map(i=>ACOMPS[i]).join(' e ') : 'Nenhum';
+  const salada   = estado.saladas.length>0 ? estado.saladas.map(i=>SALADAS[i]).join(', ') : 'Sem salada';
+  const feijao   = estado.feijao!==null ? FEIJOES[estado.feijao] : 'Sem feijão';
+  const base     = calcPreco();
+  const frete    = tipoEntrega==='delivery' ? FRETE : 0;
+  const total    = base + frete;
+
+  let entregaInfo = '';
+  let sucMsg = '';
+
+  if (tipoEntrega==='mesa') {
+    const mesa = document.getElementById('input-mesa').value.trim();
+    if (!mesa) return;
+    const obs = document.getElementById('obs-mesa').value.trim();
+    entregaInfo = `📍 *Local:* ${mesa.toLowerCase()==='retirada'?'Retirada no balcão':'Mesa '+mesa}`;
+    if (obs) entregaInfo += `\n📝 *Obs:* ${obs}`;
+    sucMsg = mesa.toLowerCase()==='retirada' ? 'Retirada confirmada!' : `Mesa ${mesa} confirmada!`;
+  } else {
+    const rua    = document.getElementById('input-rua').value.trim();
+    const num    = document.getElementById('input-numero').value.trim();
+    const bairro = document.getElementById('input-bairro').value.trim();
+    if (!rua||!num||!bairro) return;
+    const obs = document.getElementById('obs-delivery').value.trim();
+    entregaInfo = `🛵 *Endereço:* ${rua}, ${num} — ${bairro}`;
+    if (obs) entregaInfo += `\n📝 *Obs:* ${obs}`;
+    sucMsg = 'Pedido de delivery confirmado!';
+  }
+
+  const msg =
+`🍽 *Pedido — Rancharia*
+
+🥩 *Carne:* ${carneStr}
+🍚 *Acompanhamento:* ${acomp}
+🫘 *Feijão:* ${feijao}
+🥗 *Saladas:* ${salada}
+
+${entregaInfo}
+
+💰 *Prato:* R$ ${fmt(base)}${frete>0?`\n🛵 *Frete:* R$ ${fmt(frete)}`:''}
+✅ *Total: R$ ${fmt(total)}*`;
+
+  const url = `https://wa.me/${WPP_NUM}?text=${encodeURIComponent(msg)}`;
+  window.open(url, '_blank');
+
+  document.getElementById('sucesso-msg').textContent = sucMsg + ' Abrindo WhatsApp… 📲';
+  fecharDrawer();
+  abrirModal('modal-sucesso');
+}
+
+function novoPedido() {
+  estado = { carnes:[], acomps:[0,1], feijao:null, saladas:[] };
+  tipoEntrega = null;
+  fecharModal('modal-sucesso');
+  renderTudo();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function abrirModal(id) { document.getElementById(id).classList.add('ativo'); }
+function fecharModal(id) { document.getElementById(id).classList.remove('ativo'); }
+
+renderTudo();
+</script>
+</body>
+</html>
