@@ -130,10 +130,14 @@ body {
 .selecao-limite { font-size: 10px; color: rgba(212,180,131,0.5); font-weight: 600; text-transform: none; }
 
 /* ── ORDER BAR ── */
-#order-bar { position: fixed; bottom: 68px; left: 22px; right: 22px; background: var(--ouro); border-radius: 10px; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; z-index: 350; box-shadow: 0 4px 20px rgba(0,0,0,0.5); transform: translateY(150px); transition: transform 0.3s; }
+#order-bar { position: fixed; bottom: 68px; left: 22px; right: 22px; background: var(--ouro); border-radius: 10px; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; z-index: 350; box-shadow: 0 4px 20px rgba(0,0,0,0.5); transform: translateY(150px); transition: transform 0.3s; overflow: hidden; }
 #order-bar.visible { transform: translateY(0); }
+@keyframes shimmer { 0% { left: -100%; } 100% { left: 200%; } }
+#order-bar::after { content: ''; position: absolute; top: 0; left: -100%; width: 60%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent); animation: shimmer 2.5s ease-in-out infinite; pointer-events: none; }
 
-/* ── BOTTOM NAV ── */
+/* ── FLYING ITEM ── */
+@keyframes flyToCart { 0% { transform: scale(1); opacity: 1; } 80% { opacity: 0.6; } 100% { transform: scale(0.15); opacity: 0; } }
+.fly-item { position: fixed; width: 14px; height: 14px; border-radius: 50%; background: var(--ouro); z-index: 9999; pointer-events: none; }
 .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 58px; background: rgba(42,26,8,0.98); backdrop-filter: blur(15px); border-top: 1px solid rgba(212,180,131,0.15); display: flex; align-items: center; justify-content: space-around; z-index: 400; overflow: visible; }
 .nav-btn { background: none; border: none; color: rgba(212,180,131,0.4); display: flex; flex-direction: column; align-items: center; gap: 4px; font-family: 'Inter', sans-serif; font-size: 9px; font-weight: 700; text-transform: uppercase; cursor: pointer; flex: 1; }
 .nav-btn svg { width: 20px; height: 20px; }
@@ -229,7 +233,7 @@ body {
       <div style="font-size:13px; color:var(--bege); opacity:0.8; margin-bottom:24px; line-height:1.5;">Você não escolheu nenhuma salada. Quer adicionar?</div>
       <div style="display:flex; gap:10px;">
         <button onclick="fecharAviso()" style="flex:1; background:transparent; border:1px solid rgba(212,180,131,0.4); color:var(--bege); font-weight:700; padding:12px; border-radius:8px; font-size:13px;">Adicionar</button>
-        <button onclick="confirmarMesmoAssim()" style="flex:1; background:var(--ouro); border:none; color:var(--marrom); font-weight:800; padding:12px; border-radius:8px; font-size:13px;">Continuar assim</button>
+        <button onclick="confirmarMesmoAssim()" style="flex:1; background:var(--ouro); border:none; color:var(--marrom); font-weight:800; padding:12px; border-radius:8px; font-size:13px;">Continuar</button>
       </div>
     </div>
   </div>
@@ -363,10 +367,7 @@ body {
 
   <!-- Campo mesa destacado -->
   <div style="background:rgba(212,172,13,0.08); border:2px solid rgba(212,172,13,0.5); border-radius:12px; padding:14px 18px; margin-bottom:16px; display:flex; align-items:center; justify-content:space-between; gap:12px;">
-    <div>
-      <div style="font-size:13px; font-weight:800; color:var(--ouro); margin-bottom:2px;">Informe o número da mesa</div>
-      <div style="font-size:11px; color:rgba(212,180,131,0.5);">Obrigatório para chamar</div>
-    </div>
+    <div style="font-size:13px; font-weight:800; color:var(--ouro);">Informe o número da mesa</div>
     <input id="garcom-mesa" type="number" min="1" max="50" placeholder="—" oninput="if(this.value>50)this.value=50; atualizarBtnGarcom()" style="width:64px; padding:8px; background:rgba(255,255,255,0.07); border:1px solid var(--ouro); color:white; border-radius:6px; font-size:18px; font-family:'Inter',sans-serif; text-align:center; font-weight:700;">
   </div>
 
@@ -453,24 +454,24 @@ var MENU = [
     img: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=600&q=80',
     subcats: [
       { label: 'Caldos (200ml / 400ml)', items: [
-        { id:'cal1', name:'Caldo de Carne', price:10, img:'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=300&q=70' },
-        { id:'cal2', name:'Caldo de Mocotó', price:10, img:'https://images.unsplash.com/photo-1547592180-85f173990554?w=300&q=70' },
-        { id:'cal3', name:'Caldo de Feijão', price:10, img:'https://images.unsplash.com/photo-1585032226651-759b368d7246?w=300&q=70' },
-        { id:'cal4', name:'Caldo de Quenga', price:10, img:'https://images.unsplash.com/photo-1603105037880-880cd4edfb0d?w=300&q=70' }
+        { id:'cal1', name:'Caldo de Carne', price:10, img:'https://res.cloudinary.com/dwrq06fta/image/upload/v1779023413/Steaming_beef_broth_in_bowl_202605171004_tlti4q.webp' },
+        { id:'cal2', name:'Caldo de Mocotó', price:10, img:'https://res.cloudinary.com/dwrq06fta/image/upload/v1779023783/Clay_bowl_with_mocot%C3%B3_broth_202605171015_g7dq2i.webp' },
+        { id:'cal3', name:'Caldo de Feijão', price:10, img:'https://res.cloudinary.com/dwrq06fta/image/upload/v1779024193/Black_bean_soup_with_pork_202605171021_zu1ssw.webp' },
+        { id:'cal4', name:'Caldo de Quenga', price:10, img:'https://res.cloudinary.com/dwrq06fta/image/upload/v1779024580/Bowl_of_broth_with_chicken_202605171026_k4qquz.webp' }
       ]},
-      { label: 'Pão de Alho', img: 'https://images.unsplash.com/photo-1619881585843-4a8d7bad4170?w=600&q=80', items: [
-        { id:'pao1', name:'Pão de Alho à Grega', price:14, img:'https://images.unsplash.com/photo-1549931319-a545dcf3bc73?w=300&q=70' },
-        { id:'pao2', name:'Pão de Alho Simples', price:6, img:'https://images.unsplash.com/photo-1619881585843-4a8d7bad4170?w=300&q=70' },
-        { id:'pao3', name:'Pão de Alho Mano Léo', price:14, img:'https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?w=300&q=70' },
-        { id:'pao4', name:'Pão de Alho à Moda do Chéff', price:21, img:'https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=300&q=70' }
+      { label: 'Pão de Alho', img: 'https://res.cloudinary.com/dwrq06fta/image/upload/v1779024892/Grilled_garlic_bread_on_board_202605171034_q31i2k.webp', items: [
+        { id:'pao1', name:'Pão de Alho à Grega', price:14, img:'https://res.cloudinary.com/dwrq06fta/image/upload/v1779024892/Grilled_garlic_bread_on_board_202605171034_q31i2k.webp' },
+        { id:'pao2', name:'Pão de Alho Simples', price:6, img:'https://res.cloudinary.com/dwrq06fta/image/upload/v1779024892/Grilled_garlic_bread_on_board_202605171034_q31i2k.webp' },
+        { id:'pao3', name:'Pão de Alho Mano Léo', price:14, img:'https://res.cloudinary.com/dwrq06fta/image/upload/v1779024892/Grilled_garlic_bread_on_board_202605171034_q31i2k.webp' },
+        { id:'pao4', name:'Pão de Alho à Moda do Chéff', price:21, img:'https://res.cloudinary.com/dwrq06fta/image/upload/v1779024892/Grilled_garlic_bread_on_board_202605171034_q31i2k.webp' }
       ]},
-      { label: 'Pastéis (6 unidades)', img: 'https://images.unsplash.com/photo-1598515213692-48d8f3575ed6?w=600&q=80', items: [
-        { id:'pas1', name:'Pastel Só Carne', price:18, img:'https://images.unsplash.com/photo-1600850056064-a8b29d88c94b?w=300&q=70' },
-        { id:'pas2', name:'Pastel Só Queijo', price:18, img:'https://images.unsplash.com/photo-1509722747041-616f39b57569?w=300&q=70' },
-        { id:'pas3', name:'Pastel Só Calabresa', price:18, img:'https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=300&q=70' },
-        { id:'pas4', name:'Pastel Só Frango', price:20, img:'https://images.unsplash.com/photo-1598515213692-48d8f3575ed6?w=300&q=70' },
-        { id:'pas5', name:'Pastel Só Camarão', price:24, img:'https://images.unsplash.com/photo-1565680018434-b513d5e5fd47?w=300&q=70' },
-        { id:'pas6', name:'Pastel Cavaco', price:12, img:'https://images.unsplash.com/photo-1516100882582-96c3a05fe590?w=300&q=70' }
+      { label: 'Pastéis (6 unidades)', img: 'https://res.cloudinary.com/dwrq06fta/image/upload/v1779025289/1779025096532_l0t8vu.webp', items: [
+        { id:'pas1', name:'Pastel Só Carne', price:18, img:'https://res.cloudinary.com/dwrq06fta/image/upload/v1779025289/1779025096532_l0t8vu.webp' },
+        { id:'pas2', name:'Pastel Só Queijo', price:18, img:'https://res.cloudinary.com/dwrq06fta/image/upload/v1779025289/1779025096532_l0t8vu.webp' },
+        { id:'pas3', name:'Pastel Só Calabresa', price:18, img:'https://res.cloudinary.com/dwrq06fta/image/upload/v1779025289/1779025096532_l0t8vu.webp' },
+        { id:'pas4', name:'Pastel Só Frango', price:20, img:'https://res.cloudinary.com/dwrq06fta/image/upload/v1779025289/1779025096532_l0t8vu.webp' },
+        { id:'pas5', name:'Pastel Só Camarão', price:24, img:'https://res.cloudinary.com/dwrq06fta/image/upload/v1779025289/1779025096532_l0t8vu.webp' },
+        { id:'pas6', name:'Pastel Cavaco', price:12, img:'https://res.cloudinary.com/dwrq06fta/image/upload/v1779025289/1779025096532_l0t8vu.webp' }
       ]},
       { label: 'Fatiados', img: 'https://images.unsplash.com/photo-1558030006-450675393462?w=600&q=80', items: [
         { id:'fat1', name:'Filé de Bode', price:35, img:'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=300&q=70' },
@@ -808,22 +809,35 @@ window.addEventListener('scroll', function() {
 }, { passive: true });
 
 function flyToOrderBar(sourceEl) {
-  var orderBar = document.getElementById('order-bar');
-  if(!orderBar || !sourceEl) return;
   var src = sourceEl.getBoundingClientRect();
-  var dst = orderBar.getBoundingClientRect();
+  var dstX = window.innerWidth / 2 - 20;
+  var dstY = window.innerHeight - 68 - 44;
+
+  var startX = src.left + src.width / 2 - 20;
+  var startY = src.top + src.height / 2 - 20;
+
+  // Tentar pegar a imagem do card pai
+  var card = sourceEl.closest('.item-card');
+  var img = card ? card.querySelector('.item-img') : null;
+  var imgSrc = img ? img.src : '';
+
   var fly = document.createElement('div');
-  fly.className = 'fly-item';
-  fly.style.left = (src.left + src.width/2 - 20) + 'px';
-  fly.style.top  = (src.top  + src.height/2 - 20) + 'px';
-  var dx = (dst.left + dst.width/2)  - (src.left + src.width/2);
-  var dy = (dst.top  + dst.height/2) - (src.top  + src.height/2);
-  fly.style.setProperty('--fly-x',  (dx*0.6)+'px');
-  fly.style.setProperty('--fly-y',  (dy*0.6)+'px');
-  fly.style.setProperty('--fly-x2', dx+'px');
-  fly.style.setProperty('--fly-y2', dy+'px');
+  fly.style.cssText = 'position:fixed; width:45px; height:45px; border-radius:50%; overflow:hidden; z-index:9999; pointer-events:none; left:'+startX+'px; top:'+startY+'px; box-shadow:0 3px 14px rgba(0,0,0,0.5); border:2px solid var(--ouro); transition:none; background:var(--ouro);';
+  if(imgSrc) {
+    fly.innerHTML = '<img src="'+imgSrc+'" style="width:100%; height:100%; object-fit:cover;">';
+  }
   document.body.appendChild(fly);
-  setTimeout(function(){ fly.remove(); }, 650);
+
+  requestAnimationFrame(function(){
+    requestAnimationFrame(function(){
+      fly.style.transition = 'left 0.62s cubic-bezier(0.25,0.46,0.45,0.94), top 0.62s cubic-bezier(0.55,0,1,0.45), opacity 0.25s 0.38s, transform 0.62s';
+      fly.style.left = dstX + 'px';
+      fly.style.top  = dstY + 'px';
+      fly.style.opacity = '0';
+      fly.style.transform = 'scale(0.4)';
+    });
+  });
+  setTimeout(function(){ fly.remove(); }, 700);
 }
 
 function addToCart(id, delta, sourceEl) {
