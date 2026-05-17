@@ -385,7 +385,10 @@ body {
 
 <!-- ══ SOBRE ══ -->
 <div id="page-sobre" class="page flex-page" style="flex-direction:column; overflow:hidden; height:100vh; padding-bottom:60px;">
-  <div style="overflow-y:auto; flex:1; padding:28px 20px 16px; text-align:center;">
+  <div style="padding:16px 20px 0; display:flex; align-items:center;">
+    <button onclick="goPage('menu')" style="background:none; border:none; color:var(--creme); font-size:26px; font-weight:300; cursor:pointer; padding:4px 8px 4px 0; line-height:1;">‹</button>
+  </div>
+  <div style="overflow-y:auto; flex:1; padding:12px 20px 16px; text-align:center;">
     <div style="font-size:56px; margin-bottom:16px;">🌵</div>
     <div style="font-family:'Rye',serif; font-size:32px; color:var(--creme); margin-bottom:8px;">Rancharia</div>
     <div style="font-size:13px; color:var(--bege); opacity:0.7; margin-bottom:28px;">Restaurante e Petiscaria</div>
@@ -430,7 +433,7 @@ body {
     <button id="ups-agua" onclick="toggleUpsell('ups-agua','Água Mineral',4)" style="background:rgba(255,255,255,0.05); border:1px solid rgba(212,180,131,0.2); color:var(--creme); padding:14px 10px; border-radius:10px; font-size:12px; font-weight:700; cursor:pointer; transition:all 0.2s;">💧 Água<br><span class="ups-preco" style="color:var(--ouro);">R$ 4,00</span></button>
   </div>
   <button id="btn-upsell-confirmar" onclick="confirmarUpsell()" style="width:100%; max-width:260px; background:var(--ouro); border:none; color:var(--marrom); font-weight:800; padding:14px; border-radius:8px; font-size:14px; margin-bottom:10px; transition:all 0.2s;">Confirmar sem bebida?</button>
-  <button onclick="goPage('menu','upsell')" style="background:none; border:none; color:rgba(212,180,131,0.5); font-size:12px; cursor:pointer; padding:8px;">Continuar no cardápio</button>
+  <button onclick="goPage('menu','upsell')" style="width:100%; max-width:260px; background:#ffffff; border:none; color:var(--marrom); font-weight:800; padding:14px; border-radius:8px; font-size:14px; transition:all 0.2s;">Voltar ao cardápio</button>
 </div>
 
 <!-- BOTTOM NAV -->
