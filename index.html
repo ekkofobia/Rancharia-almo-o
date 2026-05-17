@@ -598,7 +598,7 @@ function goPage(name, fromPage) {
   if(name === 'cart') {
     // Verificar se tem bebida no cart
     var temBebida = cart.some(function(it){
-      return it.id.indexOf('beb') > -1 || it.id.indexOf('suc') > -1 || it.id.indexOf('cerv') > -1 || it.id.indexOf('c6') > -1;
+      return it.id.indexOf('beb') > -1 || it.id.indexOf('bev') > -1 || it.id.indexOf('suc') > -1 || it.id.indexOf('cerv') > -1;
     });
     if(!temBebida && cart.length > 0 && fromPage !== 'upsell') {
       document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
