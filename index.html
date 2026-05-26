@@ -4,6 +4,64 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Rancharia — Restaurante e Petiscaria</title>
+
+<script>
+// ════════════════════════════════════════════════════════
+// ✏️  MONTE SEU PRATO — EDITE AQUI SEM SABER PROGRAMAR
+// ════════════════════════════════════════════════════════
+
+var MONTE = {
+
+  // 💰 PREÇOS: altere o valor após os dois pontos
+  preco1Carne:  15,   // Preço com 1 pedaço de carne
+  preco2Carnes: 22,   // Preço com 2 pedaços de carne
+
+  // 🥩 CARNES: pode editar os nomes, adicionar ou remover linhas
+  // Para adicionar: copie uma linha e cole abaixo, trocando o nome
+  carnes: [
+    'Carne de Sol',
+    'Filé de Bode',
+    'Contra Filé',
+    'Cupim'
+  ],
+
+  // 🍚 ACOMPANHAMENTOS LIVRES: à vontade, sem limite
+  acompanhamentos: [
+    'Arroz Branco',
+    'Macarrão'
+  ],
+
+  // 🫘 FEIJÕES: só 1 pode ser escolhido por vez (exclusivos entre si)
+  feijoes: [
+    'Feijão Tropeiro',
+    'Feijão de Caldo'
+  ],
+
+  // 🥗 SALADAS: pode escolher até 3
+  saladas: [
+    'Salada Verde',
+    'Tomate com Cebola',
+    'Coleslaw da Casa',
+    'Vinagrete Rancheiro'
+  ],
+
+  // 🥤 BEBIDAS DO PRATO: preço separado, opcional
+  // Formato: { nome: 'Nome', preco: 0 }
+  bebidas: [
+    { nome: 'Suco 500ml',    preco: 8  },
+    { nome: 'Suco Jarra 1L', preco: 16 },
+    { nome: 'Refri Lata',    preco: 6  },
+    { nome: 'Refri 1L',      preco: 10 },
+    { nome: 'Água Mineral',  preco: 4  },
+    { nome: 'Cerveja 300ml', preco: 5  }
+  ]
+
+};
+
+// ════════════════════════════════════════════════════════
+// ⚙️  FIM DA ÁREA DE EDIÇÃO — não altere abaixo desta linha
+// ════════════════════════════════════════════════════════
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Rye&family=Inter:wght@400;600;700;800;900&family=Oswald:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -95,7 +153,18 @@ body {
 .item-price { font-family: 'Oswald', sans-serif; font-size: 16px; font-weight: 600; color: var(--ouro2); }
 .subcategory-title { font-family: 'Rye', serif; font-size: 13px; color: var(--ouro); text-align: center; padding: 8px 0; border-top: 1px solid rgba(212,180,131,0.12); }
 
-/* ── QTY CONTROL ── */
+/* ── CARROSSEL ── */
+.carousel-wrap { overflow-x: auto; display: flex; gap: 12px; padding: 8px 16px 16px; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+.carousel-wrap::-webkit-scrollbar { display: none; }
+.carousel-outer { position: relative; }
+.carousel-card { scroll-snap-align: start; flex-shrink: 0; width: 98px; background: rgba(255,255,255,0.05); border: 1px solid rgba(212,180,131,0.15); border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; }
+.carousel-card img { width: 100%; aspect-ratio: 1/1; object-fit: cover; max-height: 67px; }
+.carousel-card-body { padding: 10px; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+.carousel-card-name { font-size: 9px; font-weight: 700; color: var(--creme); line-height: 1.2; margin-bottom: 3px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.carousel-card-price { font-size: 11px; color: var(--ouro); font-weight: 800; margin-bottom: 8px; }
+.carousel-card-qty { display: flex; align-items: center; justify-content: center; gap: 6px; }
+.carousel-card-qty button { width: 24px; height: 24px; border-radius: 50%; border: 1px solid var(--ouro); background: none; color: var(--ouro); font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.carousel-card-qty span { font-size: 13px; font-weight: 700; color: var(--creme); min-width: 16px; text-align: center; }
 .card-qty { display: flex; align-items: center; border: 1px solid var(--ouro); border-radius: 14px; height: 26px; overflow: hidden; transition: all 0.2s; }
 .card-qty.zero { border-radius: 50%; width: 26px; border-color: var(--ouro); }
 .card-qty-btn { background: none; border: none; color: var(--ouro); width: 26px; height: 26px; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
@@ -164,7 +233,7 @@ body {
 <div id="page-almoco" class="page flex-page active">
   <div class="almoco-bg"></div>
   <div class="almoco-titulo">Vamos<br>almoçar?</div>
-  <button class="btn-vamos" onclick="goPage('selecao')">🤠 Vamos!</button>
+  <button class="btn-vamos" onclick="goPageAlmoco()">🤠 Vamos!</button>
   <button class="btn-talvez" onclick="goPage('menu')" style="background:#ffffff; border:none; color:var(--marrom);">Menu principal</button>
 </div>
 
@@ -174,56 +243,12 @@ body {
     <div style="font-family:'Rye',serif; font-size:32px; color:var(--creme);">Monte seu prato</div>
     <div style="font-size:12px; color:var(--bege); opacity:0.7; margin-top:4px;">Marque o que vai querer hoje</div>
     <div style="margin-top:10px; display:inline-flex; gap:8px;">
-      <div style="background:rgba(212,172,13,0.1); border:1px solid rgba(212,172,13,0.3); border-radius:8px; padding:6px 14px; font-size:11px; font-weight:700; color:var(--ouro);">1 pedaço — R$ 15,00</div>
-      <div style="background:rgba(212,172,13,0.1); border:1px solid rgba(212,172,13,0.3); border-radius:8px; padding:6px 14px; font-size:11px; font-weight:700; color:var(--ouro);">2 pedaços — R$ 22,00</div>
+      <div style="background:rgba(212,172,13,0.1); border:1px solid rgba(212,172,13,0.3); border-radius:8px; padding:6px 14px; font-size:11px; font-weight:700; color:var(--ouro);" id="badge-1carne"></div>
+      <div style="background:rgba(212,172,13,0.1); border:1px solid rgba(212,172,13,0.3); border-radius:8px; padding:6px 14px; font-size:11px; font-weight:700; color:var(--ouro);" id="badge-2carnes"></div>
     </div>
   </div>
 
-  <!-- CARNES -->
-  <div class="selecao-section">
-    <div class="selecao-label">🥩 Carnes <span class="selecao-limite">até 2 opções</span></div>
-    <div class="selecao-grid" id="grupo-carnes">
-      <div class="selecao-item" onclick="toggleGrupo(this,'carnes',2)"><div class="selecao-check">✓</div><span class="selecao-item-nome">Carne de Sol</span></div>
-      <div class="selecao-item" onclick="toggleGrupo(this,'carnes',2)"><div class="selecao-check">✓</div><span class="selecao-item-nome">Filé de Bode</span></div>
-      <div class="selecao-item" onclick="toggleGrupo(this,'carnes',2)"><div class="selecao-check">✓</div><span class="selecao-item-nome">Contra Filé</span></div>
-      <div class="selecao-item" onclick="toggleGrupo(this,'carnes',2)"><div class="selecao-check">✓</div><span class="selecao-item-nome">Cupim</span></div>
-    </div>
-  </div>
-
-  <!-- ACOMPANHAMENTOS -->
-  <div class="selecao-section">
-    <div class="selecao-label">🍚 Acompanhamentos <span class="selecao-limite">à vontade</span></div>
-    <div class="selecao-grid" id="grupo-acomp">
-      <div class="selecao-item" onclick="toggleAcomp(this)"><div class="selecao-check">✓</div><span class="selecao-item-nome">Arroz Branco</span></div>
-      <div class="selecao-item" onclick="toggleAcomp(this)"><div class="selecao-check">✓</div><span class="selecao-item-nome">Macarrão</span></div>
-      <div class="selecao-item feijao-item" onclick="toggleFeijao(this)"><div class="selecao-check">✓</div><span class="selecao-item-nome">Feijão Tropeiro</span></div>
-      <div class="selecao-item feijao-item" onclick="toggleFeijao(this)"><div class="selecao-check">✓</div><span class="selecao-item-nome">Feijão de Caldo</span></div>
-    </div>
-  </div>
-
-  <!-- SALADAS -->
-  <div class="selecao-section">
-    <div class="selecao-label">🥗 Saladas <span class="selecao-limite">até 3 opções</span></div>
-    <div class="selecao-grid" id="grupo-saladas">
-      <div class="selecao-item" onclick="toggleGrupo(this,'saladas',3)"><div class="selecao-check">✓</div><span class="selecao-item-nome">Salada Verde</span></div>
-      <div class="selecao-item" onclick="toggleGrupo(this,'saladas',3)"><div class="selecao-check">✓</div><span class="selecao-item-nome">Tomate com Cebola</span></div>
-      <div class="selecao-item" onclick="toggleGrupo(this,'saladas',3)"><div class="selecao-check">✓</div><span class="selecao-item-nome">Coleslaw da Casa</span></div>
-      <div class="selecao-item" onclick="toggleGrupo(this,'saladas',3)"><div class="selecao-check">✓</div><span class="selecao-item-nome">Vinagrete Rancheiro</span></div>
-    </div>
-  </div>
-
-  <!-- BEBIDAS -->
-  <div class="selecao-section">
-    <div class="selecao-label">🥤 Bebidas <span class="selecao-limite">opcional</span></div>
-    <div class="selecao-grid" id="grupo-bebidas">
-      <div class="selecao-item" data-preco="8"  onclick="toggleBebida(this)"><div class="selecao-check">✓</div><div style="flex:1"><span class="selecao-item-nome">Suco 500ml</span><div style="font-size:10px;color:var(--ouro);font-weight:700;margin-top:2px;">R$ 8,00</div></div></div>
-      <div class="selecao-item" data-preco="16" onclick="toggleBebida(this)"><div class="selecao-check">✓</div><div style="flex:1"><span class="selecao-item-nome">Suco Jarra 1L</span><div style="font-size:10px;color:var(--ouro);font-weight:700;margin-top:2px;">R$ 16,00</div></div></div>
-      <div class="selecao-item" data-preco="6"  onclick="toggleBebida(this)"><div class="selecao-check">✓</div><div style="flex:1"><span class="selecao-item-nome">Refri Lata</span><div style="font-size:10px;color:var(--ouro);font-weight:700;margin-top:2px;">R$ 6,00</div></div></div>
-      <div class="selecao-item" data-preco="10" onclick="toggleBebida(this)"><div class="selecao-check">✓</div><div style="flex:1"><span class="selecao-item-nome">Refri 1L</span><div style="font-size:10px;color:var(--ouro);font-weight:700;margin-top:2px;">R$ 10,00</div></div></div>
-      <div class="selecao-item" data-preco="4"  onclick="toggleBebida(this)"><div class="selecao-check">✓</div><div style="flex:1"><span class="selecao-item-nome">Água Mineral</span><div style="font-size:10px;color:var(--ouro);font-weight:700;margin-top:2px;">R$ 4,00</div></div></div>
-      <div class="selecao-item" data-preco="5"  onclick="toggleBebida(this)"><div class="selecao-check">✓</div><div style="flex:1"><span class="selecao-item-nome">Cerveja 300ml</span><div style="font-size:10px;color:var(--ouro);font-weight:700;margin-top:2px;">R$ 5,00</div></div></div>
-    </div>
-  </div>
+  <div id="selecao-gerado"></div>
 
   <!-- AVISO SALADA -->
   <div id="aviso-salada" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.75); z-index:500; display:none; align-items:center; justify-content:center; padding:24px;">
@@ -440,13 +465,23 @@ body {
 <nav class="bottom-nav" id="bottom-nav" style="display:none;">
   <button class="nav-btn" id="nav-menu" onclick="goPage('menu')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>Cardápio</button>
   <button class="nav-btn" id="nav-cart" onclick="goPage('cart')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>Pedido</button>
-  <button class="nav-btn" id="nav-almoco" onclick="goPage('almoco')" style="overflow:visible; position:relative;"><span style="font-size:28px; display:block; margin-top:-10px; line-height:1;">🍽️</span><span style="margin-top:2px;">Almoço</span></button>
+  <button class="nav-btn" id="nav-almoco" onclick="goPage('selecao')" style="overflow:visible; position:relative;"><span style="font-size:28px; display:block; margin-top:-10px; line-height:1;">🍽️</span><span style="margin-top:2px;">Almoço</span></button>
   <button class="nav-btn" id="nav-rating" onclick="goPage('rating')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Avaliar</button>
   <button class="nav-btn" id="nav-garcom" onclick="goPage('garcom')"><span style="font-size:20px;">☝️</span>Garçom</button>
 </nav>
 
 <script>
-var WHATSAPP = '557488052568';
+var almocoVisto = false;
+function goPageAlmoco() {
+  almocoVisto = true;
+  // Esconde page-almoco e mostra selecao diretamente
+  document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
+  document.getElementById('page-selecao').classList.add('active');
+  document.getElementById('bottom-nav').style.display = 'none';
+  document.documentElement.scrollTop = 0;
+  document.body.scrollTop = 0;
+}
+
 var cart = [];
 var deliveryType = 'mesa';
 var checkoutData = { nome: '', tel: '', rua: '', bairro: '', num: '', mesa: '' };
@@ -533,46 +568,154 @@ var MENU = [
     ]
   },
   {
-    cat: 'Cervejas', emoji: '🍺', id: 'cervejas',
+    cat: 'Bebidas', emoji: '🍺', id: 'cervejas',
     img: 'https://images.unsplash.com/photo-1608270586620-248524c67de9?w=600&q=80',
     subcats: [
-      { label: 'Piriguete', items: [
-        { id:'cerv1', name:'Skol / Devassa 300ml', price:5, img:'https://images.unsplash.com/photo-1566633806327-68e152aaf26d?w=300&q=70' },
-        { id:'cerv2', name:'Brahma Chopp 300ml', price:5, img:'https://images.unsplash.com/photo-1608270586620-248524c67de9?w=300&q=70' }
+      { label: 'Piriguete (long neck)', items: [
+        { id:'clp1', name:'Piriguete Puro Malte', price:7, img:'https://images.unsplash.com/photo-1535958636474-b021ee887b13?w=300&q=70' },
+        { id:'clp2', name:'Piriguete Red Lager', price:7, img:'https://images.unsplash.com/photo-1535958636474-b021ee887b13?w=300&q=70' },
+        { id:'clp3', name:'Piriguete Weiss', price:8, img:'https://images.unsplash.com/photo-1535958636474-b021ee887b13?w=300&q=70' },
+        { id:'clp4', name:'Piriguete IPA', price:9, img:'https://images.unsplash.com/photo-1535958636474-b021ee887b13?w=300&q=70' },
+        { id:'clp5', name:'Piriguete Limão', price:7, img:'https://images.unsplash.com/photo-1535958636474-b021ee887b13?w=300&q=70' },
+        { id:'clp6', name:'Piriguete Zero', price:7, img:'https://images.unsplash.com/photo-1535958636474-b021ee887b13?w=300&q=70' }
       ]},
-      { label: '600ml', items: [
-        { id:'c6_1', name:'Heineken 600ml', price:18, img:'https://images.unsplash.com/photo-1624374566285-09b48543db45?w=300&q=70' },
-        { id:'c6_2', name:'Devassa / Skol 600ml', price:10, img:'https://images.unsplash.com/photo-1566633806327-68e152aaf26d?w=300&q=70' }
+      { label: 'Garrafa 600ml', items: [
+        { id:'c6a', name:'Brahma 600ml', price:12, img:'https://images.unsplash.com/photo-1608270586620-248524c67de9?w=300&q=70' },
+        { id:'c6b', name:'Skol 600ml', price:11, img:'https://images.unsplash.com/photo-1608270586620-248524c67de9?w=300&q=70' },
+        { id:'c6c', name:'Antarctica 600ml', price:11, img:'https://images.unsplash.com/photo-1608270586620-248524c67de9?w=300&q=70' },
+        { id:'c6d', name:'Bohemia 600ml', price:13, img:'https://images.unsplash.com/photo-1608270586620-248524c67de9?w=300&q=70' },
+        { id:'c6e', name:'Devassa 600ml', price:12, img:'https://images.unsplash.com/photo-1608270586620-248524c67de9?w=300&q=70' },
+        { id:'c6f', name:'Stella Artois 600ml', price:15, img:'https://images.unsplash.com/photo-1608270586620-248524c67de9?w=300&q=70' }
+      ]},
+      { label: 'Garrafa 1L', items: [
+        { id:'c1a', name:'Brahma 1L', price:18, img:'https://images.unsplash.com/photo-1566633806327-68e152aaf26d?w=300&q=70' },
+        { id:'c1b', name:'Skol 1L', price:17, img:'https://images.unsplash.com/photo-1566633806327-68e152aaf26d?w=300&q=70' },
+        { id:'c1c', name:'Antarctica 1L', price:17, img:'https://images.unsplash.com/photo-1566633806327-68e152aaf26d?w=300&q=70' },
+        { id:'c1d', name:'Bohemia 1L', price:20, img:'https://images.unsplash.com/photo-1566633806327-68e152aaf26d?w=300&q=70' },
+        { id:'c1e', name:'Devassa 1L', price:19, img:'https://images.unsplash.com/photo-1566633806327-68e152aaf26d?w=300&q=70' },
+        { id:'c1f', name:'Stella Artois 1L', price:22, img:'https://images.unsplash.com/photo-1566633806327-68e152aaf26d?w=300&q=70' }
       ]}
     ]
   },
   {
-    cat: 'Bebidas', emoji: '🥤', id: 'bebidas',
-    img: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=600&q=80',
+    cat: 'Sucos & Refri', emoji: '🥤', id: 'bebidas',
+    img: '',
     subcats: [
-      { label: 'Sucos', items: [
-        { id:'suc1', name:'Suco — Jarra 1L', price:16, img:'https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=300&q=70' },
-        { id:'suc3', name:'Suco — Copo 500ml', price:8, img:'https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=300&q=70' }
+      { label: 'Sucos 500ml', items: [
+        { id:'suc1', name:'Maracujá 500ml', price:8, img:'https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=300&q=70' },
+        { id:'suc2', name:'Laranja 500ml', price:8, img:'https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=300&q=70' },
+        { id:'suc3', name:'Caju 500ml', price:8, img:'https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=300&q=70' },
+        { id:'suc4', name:'Goiaba 500ml', price:8, img:'https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=300&q=70' },
+        { id:'suc9', name:'Acerola 500ml', price:8, img:'https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=300&q=70' },
+        { id:'suc10', name:'Umbu 500ml', price:8, img:'https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=300&q=70' }
       ]},
-      { label: 'Refrigerantes', img: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=600&q=80', items: [
+      { label: 'Sucos Jarra 1L', items: [
+        { id:'suc5', name:'Maracujá Jarra 1L', price:16, img:'https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=300&q=70' },
+        { id:'suc6', name:'Laranja Jarra 1L', price:16, img:'https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=300&q=70' },
+        { id:'suc7', name:'Caju Jarra 1L', price:16, img:'https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=300&q=70' },
+        { id:'suc8', name:'Goiaba Jarra 1L', price:16, img:'https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=300&q=70' },
+        { id:'suc11', name:'Acerola Jarra 1L', price:16, img:'https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=300&q=70' },
+        { id:'suc12', name:'Umbu Jarra 1L', price:16, img:'https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=300&q=70' }
+      ]},
+      { label: 'Refrigerantes Lata', img: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=600&q=80', items: [
         { id:'bev1', name:'Coca-Cola Lata', price:6, img:'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=300&q=70' },
         { id:'bev1b', name:'Guaraná Lata', price:6, img:'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=300&q=70' },
-        { id:'bev1c', name:'Fanta Lata', price:6, img:'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=300&q=70' },
+        { id:'bev1c', name:'Fanta Laranja Lata', price:6, img:'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=300&q=70' },
+        { id:'bev1d', name:'Fanta Uva Lata', price:6, img:'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=300&q=70' },
+        { id:'bev1e', name:'Sprite Lata', price:6, img:'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=300&q=70' },
+        { id:'bev1f', name:'Pepsi Lata', price:6, img:'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=300&q=70' }
+      ]},
+      { label: 'Refrigerantes 1L', items: [
         { id:'bev2', name:'Coca-Cola 1L', price:10, img:'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=300&q=70' },
         { id:'bev2b', name:'Guaraná 1L', price:10, img:'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=300&q=70' },
-        { id:'bev2c', name:'Coca-Cola 2L', price:14, img:'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=300&q=70' },
-        { id:'bev3', name:'Água Mineral', price:4, img:'https://images.unsplash.com/photo-1548839140-29a749e1cf4d?w=300&q=70' }
+        { id:'bev2c', name:'Fanta Laranja 1L', price:10, img:'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=300&q=70' },
+        { id:'bev2d', name:'Fanta Uva 1L', price:10, img:'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=300&q=70' },
+        { id:'bev2e', name:'Sprite 1L', price:10, img:'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=300&q=70' },
+        { id:'bev2f', name:'Pepsi 1L', price:10, img:'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=300&q=70' }
+      ]},
+      { label: 'Refrigerantes 2L', items: [
+        { id:'bev3a', name:'Coca-Cola 2L', price:14, img:'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=300&q=70' },
+        { id:'bev3b', name:'Guaraná 2L', price:13, img:'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=300&q=70' },
+        { id:'bev3c', name:'Fanta Laranja 2L', price:13, img:'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=300&q=70' },
+        { id:'bev3d', name:'Fanta Uva 2L', price:13, img:'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=300&q=70' },
+        { id:'bev3e', name:'Sprite 2L', price:13, img:'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=300&q=70' },
+        { id:'bev3f', name:'Pepsi 2L', price:13, img:'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=300&q=70' }
+      ]},
+      { label: 'Cachaças', items: [
+        { id:'cac1', name:'Cachaça da Casa', price:6, img:'https://images.unsplash.com/photo-1569529465841-dfecdab7503b?w=300&q=70' },
+        { id:'cac2', name:'Cachaça Artesanal', price:9, img:'https://images.unsplash.com/photo-1569529465841-dfecdab7503b?w=300&q=70' },
+        { id:'cac3', name:'Ypioca Prata', price:8, img:'https://images.unsplash.com/photo-1569529465841-dfecdab7503b?w=300&q=70' },
+        { id:'cac4', name:'Ypioca Ouro', price:9, img:'https://images.unsplash.com/photo-1569529465841-dfecdab7503b?w=300&q=70' },
+        { id:'cac5', name:'Velho Barreiro', price:7, img:'https://images.unsplash.com/photo-1569529465841-dfecdab7503b?w=300&q=70' },
+        { id:'cac6', name:'51 Pirassununga', price:7, img:'https://images.unsplash.com/photo-1569529465841-dfecdab7503b?w=300&q=70' }
+      ]},
+      { label: 'Drinks', items: [
+        { id:'drk1', name:'Caipirinha Clássica', price:18, img:'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=300&q=70' },
+        { id:'drk2', name:'Caipirinha de Morango', price:20, img:'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=300&q=70' },
+        { id:'drk3', name:'Caipirinha de Maracujá', price:20, img:'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=300&q=70' },
+        { id:'drk4', name:'Mojito da Rancha', price:22, img:'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=300&q=70' },
+        { id:'drk5', name:'Batida de Coco', price:16, img:'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=300&q=70' },
+        { id:'drk6', name:'Drink da Casa', price:24, img:'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=300&q=70' }
+      ]},
+      { label: 'Água', items: [
+        { id:'bev4', name:'Água Mineral 500ml', price:4, img:'https://images.unsplash.com/photo-1548839140-29a749e1cf4d?w=300&q=70' },
+        { id:'bev4c', name:'Água Mineral 1,5L', price:7, img:'https://images.unsplash.com/photo-1548839140-29a749e1cf4d?w=300&q=70' },
+        { id:'bev4b', name:'Água com Gás', price:5, img:'https://images.unsplash.com/photo-1548839140-29a749e1cf4d?w=300&q=70' }
       ]}
     ]
   }
 ];
 
 var menuBuilt = false;
+
+function buildSelecao() {
+  // Badges de preço
+  document.getElementById('badge-1carne').textContent  = '1 pedaço — R$ ' + MONTE.preco1Carne.toFixed(2).replace('.',',');
+  document.getElementById('badge-2carnes').textContent = '2 pedaços — R$ ' + MONTE.preco2Carnes.toFixed(2).replace('.',',');
+
+  var html = '';
+
+  // Carnes
+  html += '<div class="selecao-section"><div class="selecao-label">🥩 Carnes <span class="selecao-limite">até 2 opções</span></div><div class="selecao-grid" id="grupo-carnes">';
+  MONTE.carnes.forEach(function(c){
+    html += '<div class="selecao-item" onclick="toggleGrupo(this,\'carnes\',2)"><div class="selecao-check">✓</div><span class="selecao-item-nome">'+c+'</span></div>';
+  });
+  html += '</div></div>';
+
+  // Acompanhamentos + feijões
+  html += '<div class="selecao-section"><div class="selecao-label">🍚 Acompanhamentos <span class="selecao-limite">à vontade</span></div><div class="selecao-grid" id="grupo-acomp">';
+  MONTE.acompanhamentos.forEach(function(a){
+    html += '<div class="selecao-item" onclick="toggleAcomp(this)"><div class="selecao-check">✓</div><span class="selecao-item-nome">'+a+'</span></div>';
+  });
+  MONTE.feijoes.forEach(function(f){
+    html += '<div class="selecao-item feijao-item" onclick="toggleFeijao(this)"><div class="selecao-check">✓</div><span class="selecao-item-nome">'+f+'</span></div>';
+  });
+  html += '</div></div>';
+
+  // Saladas
+  html += '<div class="selecao-section"><div class="selecao-label">🥗 Saladas <span class="selecao-limite">até 3 opções</span></div><div class="selecao-grid" id="grupo-saladas">';
+  MONTE.saladas.forEach(function(s){
+    html += '<div class="selecao-item" onclick="toggleGrupo(this,\'saladas\',3)"><div class="selecao-check">✓</div><span class="selecao-item-nome">'+s+'</span></div>';
+  });
+  html += '</div></div>';
+
+  // Bebidas
+  html += '<div class="selecao-section"><div class="selecao-label">🥤 Bebidas <span class="selecao-limite">opcional</span></div><div class="selecao-grid" id="grupo-bebidas">';
+  MONTE.bebidas.forEach(function(b){
+    html += '<div class="selecao-item" data-preco="'+b.preco+'" onclick="toggleBebida(this)"><div class="selecao-check">✓</div><div style="flex:1"><span class="selecao-item-nome">'+b.nome+'</span><div style="font-size:10px;color:var(--ouro);font-weight:700;margin-top:2px;">R$ '+b.preco.toFixed(2).replace('.',',')+'</div></div></div>';
+  });
+  html += '</div></div>';
+
+  document.getElementById('selecao-gerado').innerHTML = html;
+}
 var scrollPositions = {};
 
 function goPage(name, fromPage) {
   var currentPage = document.querySelector('.page.active');
   if(currentPage) scrollPositions[currentPage.id] = { top: document.documentElement.scrollTop || document.body.scrollTop };
+
+  // Nunca mostra page-almoco de novo após a primeira vez
+  if(name === 'almoco') name = 'menu';
 
   // Zerar seleção ao sair de Monte seu prato
   if(currentPage && currentPage.id === 'page-selecao') {
@@ -586,14 +729,15 @@ function goPage(name, fromPage) {
   var pg = document.getElementById('page-' + name);
   if(pg) pg.classList.add('active');
   
-  document.getElementById('bottom-nav').style.display = (name === 'almoco' || name === 'selecao') ? 'none' : 'flex';
-  document.querySelectorAll('.nav-btn').forEach(function(b){ b.classList.toggle('active', b.id==='nav-'+name); });
+  document.getElementById('bottom-nav').style.display = (name === 'selecao') ? 'none' : 'flex';
+  document.querySelectorAll('.nav-btn').forEach(function(b){ b.classList.toggle('active', b.id==='nav-'+name || (name==='selecao' && b.id==='nav-almoco')); });
   
   document.getElementById('cart-fixed-actions').style.display = (name === 'cart' && cart.length > 0) ? 'flex' : 'none';
   
   if(name === 'menu') {
     if(!menuBuilt) { buildMenu(); menuBuilt = true; }
     updateOrderBar();
+    setTimeout(initCarousels, 100);
   } else {
     document.getElementById('order-bar').classList.remove('visible');
   }
@@ -624,7 +768,7 @@ function goPage(name, fromPage) {
 
 function calcPrecoSelecao() {
   var carnes = document.querySelectorAll('#grupo-carnes .selecao-item.selecionado').length;
-  var precoPrato = carnes === 2 ? 22 : (carnes === 1 ? 15 : 0);
+  var precoPrato = carnes === 2 ? MONTE.preco2Carnes : (carnes === 1 ? MONTE.preco1Carne : 0);
   var precoBebidas = 0;
   document.querySelectorAll('#grupo-bebidas .selecao-item.selecionado').forEach(function(el){
     precoBebidas += parseFloat(el.getAttribute('data-preco') || 0);
@@ -717,7 +861,7 @@ function _executarConfirmar() {
   });
 
   if (selecionados.length > 0) {
-    var preco = carnesCount > 1 ? 22 : 15;
+    var preco = carnesCount > 1 ? MONTE.preco2Carnes : MONTE.preco1Carne;
     cart.push({ id: 'almoco-'+Date.now(), name: 'Prato: ' + selecionados.join(', '), price: preco, qty: 1 });
   }
 
@@ -756,20 +900,55 @@ function buildMenu() {
 
     var sec = document.createElement('div');
     sec.id = 'section-' + ci;
-    var html = '<div class="cat-section-card"><div class="cat-banner"><img src="'+cat.img+'"><div class="cat-banner-label"><span>'+cat.cat+'</span></div></div><div class="items-grid">';
-    cat.subcats.forEach(function(sub, si){
-      if(sub.img) {
-        html += '<div class="cat-banner" style="height:80px; margin:8px 0 0;"><img src="'+sub.img+'"><div class="cat-banner-label"><span style="font-size:18px;">'+sub.label+'</span></div></div>';
-      } else if(si > 0) {
-        html += '<div class="subcategory-title">'+sub.label+'</div>';
-      }
-      sub.items.forEach(function(it){
-        var cartItem = cart.find(function(c){ return c.id===it.id; });
-        var qty = cartItem ? cartItem.qty : 0;
-        html += '<div class="item-card"><img class="item-img" src="'+it.img+'"><div class="item-info"><div class="item-name">'+it.name+'</div><div class="item-bottom"><div class="item-price">R$ '+it.price.toFixed(2).replace('.',',')+'</div><div class="card-qty '+(qty===0?'zero':'')+'" id="qty-'+it.id+'"><button class="card-qty-btn card-qty-minus" onclick="addToCart(\''+it.id+'\', -1)">−</button><div class="card-qty-num" id="qnum-'+it.id+'">'+qty+'</div><button class="card-qty-btn" onclick="addToCart(\''+it.id+'\', 1, this)">+</button></div></div></div></div>';
+    var useCarousel = (cat.id === 'cervejas' || cat.id === 'bebidas');
+    var html = '<div class="cat-section-card">';
+    if(cat.img) {
+      html += '<div class="cat-banner"><img src="'+cat.img+'"><div class="cat-banner-label"><span>'+cat.cat+'</span></div></div>';
+    }
+
+    if(useCarousel) {
+      cat.subcats.forEach(function(sub, si) {
+        html += '<div class="subcategory-title" style="padding:0 16px; margin-top:'+(si===0?'8':'0')+'px;">'+sub.label+'</div>';
+        html += '<div class="carousel-outer" id="co-'+ci+'-'+si+'">';
+        html += '<div class="carousel-wrap">';
+        sub.items.forEach(function(it){
+          var cartItem = cart.find(function(c){ return c.id===it.id; });
+          var qty = cartItem ? cartItem.qty : 0;
+          html += '<div class="carousel-card">';
+          html += '<img src="'+it.img+'" loading="lazy">';
+          html += '<div class="carousel-card-body">';
+          html += '<div class="carousel-card-name">'+it.name+'</div>';
+          html += '<div class="carousel-card-price">R$ '+it.price.toFixed(2).replace('.',',')+'</div>';
+          html += '<div class="carousel-card-qty" id="cqty-'+it.id+'">';
+          if(qty === 0) {
+            html += '<button onclick="addToCart(\''+it.id+'\',1,this)" style="width:100%; border-radius:8px;">+</button>';
+          } else {
+            html += '<button onclick="addToCart(\''+it.id+'\',-1)">−</button>';
+            html += '<span id="cqnum-'+it.id+'">'+qty+'</span>';
+            html += '<button onclick="addToCart(\''+it.id+'\',1,this)">+</button>';
+          }
+          html += '</div></div></div>';
+        });
+        html += '</div></div>';
       });
-    });
-    html += '</div></div>';
+    } else {
+      html += '<div class="items-grid">';
+      cat.subcats.forEach(function(sub, si){
+        if(sub.img) {
+          html += '<div class="cat-banner" style="height:80px; margin:8px 0 0;"><img src="'+sub.img+'"><div class="cat-banner-label"><span style="font-size:18px;">'+sub.label+'</span></div></div>';
+        } else if(si > 0) {
+          html += '<div class="subcategory-title">'+sub.label+'</div>';
+        }
+        sub.items.forEach(function(it){
+          var cartItem = cart.find(function(c){ return c.id===it.id; });
+          var qty = cartItem ? cartItem.qty : 0;
+          html += '<div class="item-card"><img class="item-img" src="'+it.img+'"><div class="item-info"><div class="item-name">'+it.name+'</div><div class="item-bottom"><div class="item-price">R$ '+it.price.toFixed(2).replace('.',',')+'</div><div class="card-qty '+(qty===0?'zero':'')+'" id="qty-'+it.id+'"><button class="card-qty-btn card-qty-minus" onclick="addToCart(\''+it.id+'\', -1)">−</button><div class="card-qty-num" id="qnum-'+it.id+'">'+qty+'</div><button class="card-qty-btn" onclick="addToCart(\''+it.id+'\', 1, this)">+</button></div></div></div></div>';
+        });
+      });
+      html += '</div>';
+    }
+
+    html += '</div>';
     sec.innerHTML = html;
     sections.appendChild(sec);
   });
@@ -860,10 +1039,73 @@ function addToCart(id, delta, sourceEl) {
 function updateCardQty(id) {
   var ex = cart.find(function(c){ return c.id===id; });
   var qty = ex ? ex.qty : 0;
+
+  // Cards normais (grid)
   var box = document.getElementById('qty-'+id);
   var num = document.getElementById('qnum-'+id);
   if(box) box.classList.toggle('zero', qty===0);
   if(num) num.textContent = qty;
+
+  // Cards carrossel — recriar os controles em TODOS (incluindo duplicatas do loop infinito)
+  document.querySelectorAll('[id="cqty-'+id+'"]').forEach(function(cbox) {
+    if(qty === 0) {
+      cbox.innerHTML = '<button onclick="addToCart(\''+id+'\',1,this)" style="width:100%; border-radius:8px;">+</button>';
+    } else {
+      cbox.innerHTML = '<button onclick="addToCart(\''+id+'\',-1)">−</button><span>'+qty+'</span><button onclick="addToCart(\''+id+'\',1,this)">+</button>';
+    }
+  });
+}
+
+var carouselTimers = [];
+
+function initCarousels() {
+  carouselTimers.forEach(clearInterval);
+  carouselTimers = [];
+
+  var wraps = document.querySelectorAll('.carousel-wrap');
+  wraps.forEach(function(wrap, idx) {
+    wrap.style.scrollSnapType = 'none';
+
+    // Duplicar conteúdo (só uma vez por elemento)
+    if(!wrap.dataset.cinit) {
+      var orig = wrap.innerHTML;
+      wrap.innerHTML = orig + orig + orig + orig + orig + orig;
+      wrap.dataset.cinit = '1';
+    }
+
+    var dir = (idx % 2 === 0) ? 1 : -1;
+    var speed = 0.5;
+    var paused = false;
+    var seg = 0; // calculado na primeira execução
+
+    wrap.addEventListener('touchstart',  function(){ paused = true;  }, { passive: true });
+    wrap.addEventListener('touchend',    function(){ setTimeout(function(){ paused = false; }, 1400); }, { passive: true });
+    wrap.addEventListener('touchcancel', function(){ setTimeout(function(){ paused = false; }, 1400); }, { passive: true });
+    wrap.addEventListener('mousedown',   function(){ paused = true;  });
+    wrap.addEventListener('mouseup',     function(){ setTimeout(function(){ paused = false; }, 1400); });
+    wrap.addEventListener('mouseleave',  function(){ setTimeout(function(){ paused = false; }, 1400); });
+
+    var timer = setInterval(function() {
+      // Medir na primeira execução (DOM já renderizado)
+      if(seg === 0) {
+        seg = Math.floor(wrap.scrollWidth / 6);
+        if(seg === 0) return; // ainda não renderizou
+        wrap.scrollLeft = seg * 2;
+        return;
+      }
+
+      if(paused) return;
+
+      wrap.scrollLeft += dir * speed;
+      var sl = wrap.scrollLeft;
+
+      if(dir > 0 && sl >= seg * 4) { wrap.scrollLeft = sl - seg * 2; }
+      if(dir < 0 && sl <= seg * 2) { wrap.scrollLeft = sl + seg * 2; }
+
+    }, 16);
+
+    carouselTimers.push(timer);
+  });
 }
 
 function updateOrderBar() {
@@ -974,14 +1216,57 @@ function chamarGarcomMsg(msg) {
 
 function enviarPedido() {
   var sub = cart.reduce(function(a,b){ return a+b.price*b.qty; }, 0);
-  var msg = '*Novo Pedido — Rancharia*\n';
-  if(deliveryType==='mesa') msg += '*Mesa:* '+(checkoutData.mesa||'Não informada');
-  else if(deliveryType==='retirada') msg += '*Retirada:* '+checkoutData.nome+' ('+checkoutData.tel+')';
-  else msg += '*Delivery:* '+checkoutData.nome+'\n*Endereço:* '+checkoutData.rua+', '+checkoutData.num+' - '+checkoutData.bairro;
-  msg += '\n------------------\n';
+  var agora = new Date();
+  var hora = agora.getHours().toString().padStart(2,'0') + ':' + agora.getMinutes().toString().padStart(2,'0');
+  var data = agora.toLocaleDateString('pt-BR');
+
+  // Montar linha de entrega
+  var entregaLinha = '';
+  if(deliveryType==='mesa') entregaLinha = 'Mesa: ' + (checkoutData.mesa||'—');
+  else if(deliveryType==='retirada') entregaLinha = 'Retirada: ' + checkoutData.nome;
+  else entregaLinha = 'Delivery: ' + checkoutData.nome + ' — ' + checkoutData.rua + ', ' + checkoutData.num + ' - ' + checkoutData.bairro;
+
+  // WhatsApp
+  var msg = '*Novo Pedido — Rancharia*\n*'+entregaLinha+'*\n------------------\n';
   cart.forEach(function(it){ msg += '- '+it.qty+'x '+it.name+'\n'; });
   msg += '------------------\n*Total: R$ '+sub.toFixed(2).replace('.',',')+'*';
   window.open('https://wa.me/'+WHATSAPP+'?text='+encodeURIComponent(msg), '_blank');
+
+  // Impressão silenciosa via iframe oculto
+  var itensHtml = '';
+  cart.forEach(function(it){
+    itensHtml += '<tr><td>'+(it.qty)+'x</td><td>'+it.name+'</td><td style="text-align:right;">R$ '+(it.price*it.qty).toFixed(2).replace('.',',')+'</td></tr>';
+  });
+
+  var ticket = '<!DOCTYPE html><html><head><meta charset="UTF-8"><style>'
+    + 'body{font-family:monospace;font-size:13px;width:280px;margin:0;padding:10px;}'
+    + 'h2{text-align:center;margin:0 0 4px;font-size:16px;}'
+    + '.sub{text-align:center;font-size:11px;margin-bottom:10px;}'
+    + 'hr{border:none;border-top:1px dashed #000;margin:6px 0;}'
+    + 'table{width:100%;border-collapse:collapse;}'
+    + 'td{padding:2px 0;vertical-align:top;}'
+    + '.total{font-size:15px;font-weight:bold;text-align:right;margin-top:8px;}'
+    + '.rodape{text-align:center;font-size:10px;margin-top:10px;}'
+    + '</style></head><body>'
+    + '<h2>🌵 RANCHARIA</h2>'
+    + '<div class="sub">Restaurante e Petiscaria</div>'
+    + '<hr>'
+    + '<div>'+entregaLinha+'</div>'
+    + '<div style="font-size:11px;">'+data+' — '+hora+'</div>'
+    + '<hr>'
+    + '<table>'+itensHtml+'</table>'
+    + '<hr>'
+    + '<div class="total">TOTAL: R$ '+sub.toFixed(2).replace('.',',')+'</div>'
+    + '<div class="rodape">Obrigado pela preferência!</div>'
+    + '</body><script>window.onload=function(){window.print();window.onafterprint=function(){window.close();};<\/script></html>';
+
+  var iframe = document.createElement('iframe');
+  iframe.style.cssText = 'position:fixed;width:0;height:0;border:none;left:-9999px;top:-9999px;';
+  document.body.appendChild(iframe);
+  iframe.contentWindow.document.open();
+  iframe.contentWindow.document.write(ticket);
+  iframe.contentWindow.document.close();
+  setTimeout(function(){ iframe.remove(); }, 5000);
 }
 
 var upsellSelecionados = {};
@@ -1033,7 +1318,7 @@ function enviarAvaliacao() {
 
 function showToast(m) { var t = document.getElementById('toast'); t.textContent = m; t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 2500); }
 
-window.addEventListener('load', function() { buildMenu(); menuBuilt = true; });
+window.addEventListener('load', function() { buildMenu(); menuBuilt = true; buildSelecao(); setTimeout(initCarousels, 500); });
 </script>
 </body>
 </html>
